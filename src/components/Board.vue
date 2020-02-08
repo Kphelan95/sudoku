@@ -22,17 +22,21 @@
 
 <script>
 import vaildate from './ValidateBtn';
+import { sudoku } from 'sudoku.js/sudoku.js'
 export default {
     name:'Sudoku',
     data (){
         return {
             puzzle:[],
+            puzzle2:[],
             isVaild: ""
         }
         /* notes
             next, change vaildate logic to use sets,( with this check to make sure the length is 9 so no dops)
-            next, put this on git
-            next, look up API's to randomis the borde
+            next, add 3 buttons to change the difficutly
+            next, add a reset button
+            next, bind each cell to only hold 1 char
+            next,
             next, fix all veriable names and comments, dont add // to the end of the line, also explain why you are doing things and not how
             DONE
         */
@@ -44,10 +48,26 @@ export default {
         this.generatePuzzle()
     },
     methods: { 
-        generatePuzzle (){//this method is pointless, but teaches me how to run methods, i could just put the array in data return
-            //this.puzzle=[{0:[1,2,3,5], 1:[6,7,8,9]}]
-            //this.puzzle=[1, [1, 2],2,3,5]
-            this.puzzle=[[5,'',4,6,7,8,9,1,2],// the '' should be not vaild
+        generatePuzzle (){
+            const boardString = sudoku.generate('easy');
+            this.puzzle = sudoku.board_string_to_grid(boardString)
+            .map(row=>{
+                    return row.map(cell =>{
+                        return{
+                            value: cell,
+                            orginal: cell !==null
+                        }
+                    })
+                })
+            for(let row=0;row<9;row++){
+                for(let col=0;col<9;col++){
+                    if(this.puzzle[row][col].value==='.')//cell is empty
+                    this.puzzle[row][col].value='';
+                }
+            }
+            //console.log(boardString);
+            //console.log(this.puzzle2);
+        /*    this.puzzle2=[[5,'',4,6,7,8,9,1,2],// the '' should be not vaild
                         [6,7,2,1,9,5,3,4,8],
                         [1,9,8,3,4,2,5,6,7],
                         [8,5,9,7,6,1,4,2,3],
@@ -63,121 +83,14 @@ export default {
                             orginal: cell !==null
                         }
                     })
-                })
-            //console.log(this.puzzle2[0].rowOne)
-            //console.log(this.puzzle)
+                }) */
         },
         test(x, y,test){
             console.log("Hello world!");
             console.log("x=" + (x+1));
             console.log("y=" + (y+1));
             console.log(test[x][y].value);
-        },
-   /*     validateSudoku(borde){
-            //console.log(borde[5][5].value);
-
-            for(let box=0;box<9;box++){
-                if(this.validateSudokuBox(borde,box)===false){//;
-                    console.log("sudoku is not vaild")
-                     this.isVaild="sudoku is not vaild";
-                    //console.log(isVaild);
-                    return false;
-                }
             }
-            if(this.validateSudokuRows(borde)===false){// look to change this to !
-                console.log("sudoku is not vaild")
-                this.isVaild="sudoku is not vaild";
-                return false;
-                }
-            console.log("sudoku is vaild")
-            this.isVaild="sudoku is vaild";
-            return false;
-        },
-        validateSudokuBox(borde,boxNum){
-            var rowTest,colTest,outerBound,lowerBound;
-            let values = [];
-            let count =0;
-           if(boxNum==0){//this is the top left box
-                rowTest=0;
-                colTest=0;
-                //setting the value of the upper bound for the outer for loop
-                //setting bound for nest loop
-            } else if(boxNum==1){//top middle box
-                rowTest=0;
-                colTest=3;
-            }
-             else if(boxNum==2){//top right box
-                rowTest=0;
-                colTest=6;
-            }
-            else if(boxNum==3){//middle left box
-                rowTest=3;
-                colTest=0;
-            }
-            else if(boxNum==4){//middle middle box
-                rowTest=3;
-                colTest=3;
-            }
-            else if(boxNum==5){//middle right box
-                rowTest=3;
-                colTest=6;
-            }
-             else if(boxNum==6){//bottem left box
-                rowTest=6;
-                colTest=0;
-            }
-             else if(boxNum==7){//bottem middle box
-                rowTest=6;
-                colTest=3;
-            }
-             else if(boxNum==8){//bottem right box
-                rowTest=6;
-                colTest=6;
-            }
-            outerBound=rowTest+3;
-            lowerBound=colTest+3;
-            let valueHolder = colTest;//This vlaue is used to reset the inner for loop
-            for(;rowTest<outerBound;rowTest++){//put all 9 values into an array
-                for(colTest=valueHolder;colTest<lowerBound;colTest++){
-                   values[count]=borde[rowTest][colTest].value;
-                   if(values[count]==''){//cell is empty
-                    return false;
-                   }
-                   count++;
-                }
-            }
-            count=0;
-            values.sort();
-            var test;
-            //for(test=0;test<9;test++){// checking array for doplicuts
-            //    console.log(values[test]); 
-            //}
-            for(test=0;test<8;test++){// checking array for doplicuts
-                if(values[test]==values[test+1]){
-                    return false;
-                }
-            }
-        },
-        validateSudokuRows(borde){
-            //console.log(borde[0][0].value);
-            let currentCell,counter, rows;
-            let rowValues= [];
-            for(rows=0;rows<9;rows++){
-                for(currentCell=0;currentCell<9;currentCell++){
-                    if(borde[rows][currentCell].value==null){
-                        return false;
-                    }
-                    rowValues[currentCell]=borde[rows][currentCell].value;
-                }
-                rowValues.sort();
-                for(counter=0;counter<8;counter++){// array stops at 8 because it will array index out of bounce with the +1 in the logic
-                    if(rowValues[counter]==rowValues[counter+1]){
-                        return false;
-                    }
-                }
-            }
-        }//,   */
-        //new method
     }
 }
 
