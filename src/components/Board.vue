@@ -1,6 +1,12 @@
 <template>
     <div>
         <div class="grid">
+            <v-row>
+                <v-btn color="primary"  @click="newBorde('easy')">easy</v-btn>
+                <v-btn color="primary" @click="newBorde('medium')">medium</v-btn>
+                <v-btn color="primary" @click="newBorde('hard')">hard</v-btn>
+                <v-btn color="primary" @click="newBorde('insane')">insane</v-btn>
+            </v-row>
             <div class="row" :class="{'bottomBorder':rowIndex===2 || rowIndex===5}" 
              v-for="(row, rowIndex) in puzzle" :key="rowIndex">
                 <v-text-field v-model.number="cell.value" class="cell ma-0 pa-0 " hide-details :class="{'rightBorder':colIndex===2 || colIndex===5, 'orginal': cell.orginal==true}" 
@@ -12,9 +18,6 @@
         </div>
     <v-row>
     <!-- <v-btn primary color="success" class="btn" @click="validateSudoku(puzzle,isVaild)"> validate</v-btn> -->
-    </v-row>
-    <v-row>
-     {{isVaild}}
     </v-row>
     <vaildate :vaildBoard="puzzle"/>
     </div>
@@ -38,6 +41,11 @@ export default {
             next, bind each cell to only hold 1 char
             next,
             next, fix all veriable names and comments, dont add // to the end of the line, also explain why you are doing things and not how
+
+            brian
+                -make a homepage to select difficutly, then route to the main page
+                -move difficutly over to the left
+                -will need vux X to bring difficutly over to the main page
             DONE
         */
     },
@@ -90,7 +98,25 @@ export default {
             console.log("x=" + (x+1));
             console.log("y=" + (y+1));
             console.log(test[x][y].value);
+        },
+        newBorde(difficutly){
+            const boardString = sudoku.generate(difficutly);
+            this.puzzle = sudoku.board_string_to_grid(boardString)
+            .map(row=>{
+                    return row.map(cell =>{
+                        return{
+                            value: cell,
+                            orginal: cell !==null
+                        }
+                    })
+                })
+            for(let row=0;row<9;row++){
+                for(let col=0;col<9;col++){
+                    if(this.puzzle[row][col].value==='.')//cell is empty
+                    this.puzzle[row][col].value='';
+                }
             }
+        }
     }
 }
 
@@ -128,6 +154,11 @@ export default {
 .v-input__control, .v-input__slot, .v-select__slot {
 	border: 0;
 }
-
+.btn{
+    padding-top: 50px;
+    padding-right: 30px;
+    padding-bottom: 50px;
+    padding-left: 80px;
+}
 
 </style>
