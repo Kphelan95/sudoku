@@ -1,12 +1,15 @@
 <template>
     <div>
+        <v-row>
         <div class="grid">
-            <v-row>
-                <v-btn color="primary"  @click="newBorde('easy')">easy</v-btn>
-                <v-btn color="primary" @click="newBorde('medium')">medium</v-btn>
-                <v-btn color="primary" @click="newBorde('hard')">hard</v-btn>
-                <v-btn color="primary" @click="newBorde('insane')">insane</v-btn>
+            <v-row class="pb-5">
+                <v-btn  color="primary" @click="newboard('easy')">easy</v-btn>
+                <v-btn color="primary" @click="newboard('medium')">medium</v-btn>
+                <v-btn color="primary" @click="newboard('hard')">hard</v-btn>
+                <v-btn color="primary" @click="newboard('insane')">insane</v-btn>
+                <v-btn color="error" @click="ResetPuzzle()">reset</v-btn>
             </v-row>
+            
             <div class="row" :class="{'bottomBorder':rowIndex===2 || rowIndex===5}" 
              v-for="(row, rowIndex) in puzzle" :key="rowIndex">
                 <v-text-field v-model.number="cell.value" class="cell ma-0 pa-0 " hide-details :class="{'rightBorder':colIndex===2 || colIndex===5, 'orginal': cell.orginal==true}" 
@@ -16,6 +19,7 @@
                 </v-text-field>
             </div>
         </div>
+        </v-row>
     <v-row>
     <!-- <v-btn primary color="success" class="btn" @click="validateSudoku(puzzle,isVaild)"> validate</v-btn> -->
     </v-row>
@@ -31,8 +35,9 @@ export default {
     data (){
         return {
             puzzle:[],
-            puzzle2:[],
-            isVaild: ""
+            //puzzleReset:[],
+            isVaild: "",
+            resetPoint: ""
         }
         /* notes
             next, change vaildate logic to use sets,( with this check to make sure the length is 9 so no dops)
@@ -73,25 +78,7 @@ export default {
                     this.puzzle[row][col].value='';
                 }
             }
-            //console.log(boardString);
-            //console.log(this.puzzle2);
-        /*    this.puzzle2=[[5,'',4,6,7,8,9,1,2],// the '' should be not vaild
-                        [6,7,2,1,9,5,3,4,8],
-                        [1,9,8,3,4,2,5,6,7],
-                        [8,5,9,7,6,1,4,2,3],
-                        [4,2,6,8,5,3,7,9,1],
-                        [7,1,3,9,2,4,8,5,6],
-                        [9,6,1,5,3,7,2,8,4],
-                        [2,8,7,4,1,9,6,3,5],
-                        [3,4,5,2,8,6,1,7,9]]
-                .map(row=>{
-                    return row.map(cell =>{
-                        return{
-                            value: cell,
-                            orginal: cell !==null
-                        }
-                    })
-                }) */
+            this.resetPoint=boardString;
         },
         test(x, y,test){
             console.log("Hello world!");
@@ -99,9 +86,26 @@ export default {
             console.log("y=" + (y+1));
             console.log(test[x][y].value);
         },
-        newBorde(difficutly){
+        newboard(difficutly){
             const boardString = sudoku.generate(difficutly);
             this.puzzle = sudoku.board_string_to_grid(boardString)
+            .map(row=>{
+                    return row.map(cell =>{
+                        return{
+                            value: cell,
+                            orginal: cell !==null
+                        }
+                    })
+                })
+            for(let row=0;row<9;row++){
+                for(let col=0;col<9;col++){
+                    if(this.puzzle[row][col].value==='.')//cell is empty
+                    this.puzzle[row][col].value='';
+                }
+            }
+        },
+        ResetPuzzle(){
+            this.puzzle = sudoku.board_string_to_grid(this.resetPoint)
             .map(row=>{
                     return row.map(cell =>{
                         return{
@@ -160,5 +164,6 @@ export default {
     padding-bottom: 50px;
     padding-left: 80px;
 }
+
 
 </style>
