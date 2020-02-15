@@ -41,10 +41,8 @@ export default {
         }
         /* notes
             next, change vaildate logic to use sets,( with this check to make sure the length is 9 so no dops)
-            next, add 3 buttons to change the difficutly
-            next, add a reset button
             next, bind each cell to only hold 1 char
-            next,
+            next, make welcomepage look nice
             next, fix all veriable names and comments, dont add // to the end of the line, also explain why you are doing things and not how
 
             brian
@@ -52,6 +50,8 @@ export default {
                 -move difficutly over to the left
                 -will need vux X to bring difficutly over to the main page
             DONE
+
+            current changes from github, i made welcome Page look a bit nicer, and i made only one route load 
         */
     },
     components: {
@@ -62,7 +62,8 @@ export default {
     },
     methods: { 
         generatePuzzle (){
-            const boardString = sudoku.generate('easy');
+            //const boardString = sudoku.generate('easy');          $route.params.difficulty
+            const boardString = sudoku.generate(this.$route.params.difficulty);// this is bad, easy for user to mess up    
             this.puzzle = sudoku.board_string_to_grid(boardString)
             .map(row=>{
                     return row.map(cell =>{
@@ -78,7 +79,7 @@ export default {
                     this.puzzle[row][col].value='';
                 }
             }
-            this.resetPoint=boardString;
+            this.resetPoint=boardString; // this sets the reset point
         },
         test(x, y,test){
             console.log("Hello world!");
@@ -103,6 +104,7 @@ export default {
                     this.puzzle[row][col].value='';
                 }
             }
+            this.resetPoint=boardString;
         },
         ResetPuzzle(){
             this.puzzle = sudoku.board_string_to_grid(this.resetPoint)
