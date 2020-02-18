@@ -1,10 +1,18 @@
 <template>
   <v-app>
-    <v-card width="1000" class="mx-auto mt-5">
+
+      <div>
+       <v-app-bar dense>
+
+         <v-toolbar-title>Sudoku</v-toolbar-title>
+       </v-app-bar>
+      </div>
+
+       
       <v-container >
         <v-row justify="center">
           <v-card-title>
-            <h1 class="display-1" >Lets play some sudoku</h1>
+            <h1 class="display-1" >Let's play some sudoku!</h1>
           </v-card-title>
         </v-row>
         
@@ -19,7 +27,7 @@
         <router-view></router-view>
       </v-row>
       </v-container>
-    </v-card>
+   
   </v-app>
 </template>
 

@@ -2,28 +2,34 @@
     <div>
         <v-row>
         <div class="grid">
-            <v-row class="pb-5">
-                <v-btn  color="primary" @click="newboard('easy')">easy</v-btn>
-                <v-btn color="primary" @click="newboard('medium')">medium</v-btn>
-                <v-btn color="primary" @click="newboard('hard')">hard</v-btn>
-                <v-btn color="primary" @click="newboard('insane')">insane</v-btn>
-                <v-btn color="error" @click="ResetPuzzle()">reset</v-btn>
-            </v-row>
-            
-            <div class="row" :class="{'bottomBorder':rowIndex===2 || rowIndex===5}" 
-             v-for="(row, rowIndex) in puzzle" :key="rowIndex">
-                <v-text-field v-model.number="cell.value" class="cell ma-0 pa-0 " hide-details :class="{'rightBorder':colIndex===2 || colIndex===5, 'orginal': cell.orginal==true}" 
-                 v-for="(cell, colIndex) in row" :key="colIndex"  @click="test(rowIndex,colIndex,puzzle)"> 
-                 <!-- i need to look up v-text-field to see how i can make some changes//// look into binding the char limit, look to chagne style, look at CSS -->
-                 <!-- change v-text-field to div to see OG            class="centered-input text--darken-3 mt-3"              -->
-                </v-text-field>
-            </div>
+            <v-layout row justify-end> 
+                <v-flex md6>
+                    <div class="row" :class="{'bottomBorder':rowIndex===2 || rowIndex===5}" 
+                    v-for="(row, rowIndex) in puzzle" :key="rowIndex">
+                        <v-text-field v-model.number="cell.value" class="cell ma-0 pa-0 " hide-details :class="{'rightBorder':colIndex===2 || colIndex===5, 'orginal': cell.orginal===true}" 
+                        v-for="(cell, colIndex) in row" :key="colIndex" maxlength="1"  @click="test(rowIndex,colIndex,puzzle)"> 
+                        </v-text-field>
+                    </div>
+                </v-flex>
+                <v-flex md3>
+                    <v-container fill-height fluid >
+                        <v-row justify="end">
+                            <v-btn large color="primary" @click="newboard('easy')">easy </v-btn>
+                            <v-btn large color="primary" @click="newboard('medium')">medium </v-btn>
+                            <v-btn large color="primary" @click="newboard('hard')">hard</v-btn>
+                            <v-btn large color="primary" @click="newboard('insane')">insane</v-btn>
+                            <v-btn large color="error" @click="ResetPuzzle()">reset</v-btn>
+                        </v-row>
+                    </v-container>
+                </v-flex>
+            </v-layout>
         </div>
         </v-row>
     <v-row>
     <!-- <v-btn primary color="success" class="btn" @click="validateSudoku(puzzle,isVaild)"> validate</v-btn> -->
     </v-row>
-    <vaildate :vaildBoard="puzzle"/>
+    <vaildate class="mt-4" :vaildBoard="puzzle"/>
+    <router-link to='/'>return</router-link>
     </div>
 </template>
 
@@ -36,12 +42,13 @@ export default {
         return {
             puzzle:[],
             //puzzleReset:[],
+            emptytBoard: ".................................................................................",
             isVaild: "",
-            resetPoint: ""
+            resetPoint: "",
+            boardString: ""
         }
         /* notes
             next, change vaildate logic to use sets,( with this check to make sure the length is 9 so no dops)
-            next, bind each cell to only hold 1 char
             next, make welcomepage look nice
             next, fix all veriable names and comments, dont add // to the end of the line, also explain why you are doing things and not how
 
@@ -62,24 +69,11 @@ export default {
     },
     methods: { 
         generatePuzzle (){
-            //const boardString = sudoku.generate('easy');          $route.params.difficulty
-            const boardString = sudoku.generate(this.$route.params.difficulty);// this is bad, easy for user to mess up    
-            this.puzzle = sudoku.board_string_to_grid(boardString)
-            .map(row=>{
-                    return row.map(cell =>{
-                        return{
-                            value: cell,
-                            orginal: cell !==null
-                        }
-                    })
-                })
-            for(let row=0;row<9;row++){
-                for(let col=0;col<9;col++){
-                    if(this.puzzle[row][col].value==='.')//cell is empty
-                    this.puzzle[row][col].value='';
-                }
+            let userInput= this.$route.params.difficulty;
+            if(userInput!="easy" && userInput!="medium" && userInput!="hard" && userInput!="insane"){
+                userInput= "";
             }
-            this.resetPoint=boardString; // this sets the reset point
+            this.newboard(userInput);
         },
         test(x, y,test){
             console.log("Hello world!");
@@ -88,13 +82,18 @@ export default {
             console.log(test[x][y].value);
         },
         newboard(difficutly){
-            const boardString = sudoku.generate(difficutly);
-            this.puzzle = sudoku.board_string_to_grid(boardString)
+            if(difficutly===""){
+                this.boardString=this.emptytBoard;
+            }
+            else{
+                this.boardString = sudoku.generate(difficutly);
+            }
+            this.puzzle = sudoku.board_string_to_grid(this.boardString)
             .map(row=>{
                     return row.map(cell =>{
                         return{
                             value: cell,
-                            orginal: cell !==null
+                            orginal: cell !='.'
                         }
                     })
                 })
@@ -104,7 +103,7 @@ export default {
                     this.puzzle[row][col].value='';
                 }
             }
-            this.resetPoint=boardString;
+            this.resetPoint=this.boardString;
         },
         ResetPuzzle(){
             this.puzzle = sudoku.board_string_to_grid(this.resetPoint)
@@ -112,7 +111,7 @@ export default {
                     return row.map(cell =>{
                         return{
                             value: cell,
-                            orginal: cell !==null
+                            orginal: cell !='.'
                         }
                     })
                 })
@@ -155,6 +154,7 @@ export default {
 }
 .orginal{
     font-weight: bold;
+    background:#d3d3d3;
 }
 
 .v-input__control, .v-input__slot, .v-select__slot {
@@ -166,6 +166,10 @@ export default {
     padding-bottom: 50px;
     padding-left: 80px;
 }
+.bric{
+    width: 20px;
+}
+
 
 
 </style>
