@@ -3,7 +3,7 @@
 
     <!-- <v-btn color="primary" dark @click="doSomething">Open Dialog</v-btn> -->
     <v-btn primary color="success" @click="validateSudoku(vaildBoard)">Validate</v-btn>
-    <v-dialog v-model="dialog" persistent max-width="290">
+    <v-dialog v-model="dialog" persistent max-width="400">
       <v-card>
         <v-card-title class="headline">{{ isValid }}</v-card-title>
         <!--<v-card-text>{{ isValid }}</v-card-text> -->
@@ -49,12 +49,12 @@
             this.dialog = true;
             return false;
           }
-        this.isValid="Congrats! The sudoku board is correct.";
+        this.isValid="The sudoku board is correct!";
         this.dialog = true;
         return true;
       },
       validateSudokuBox(board,boxNum){
-        var rowTest,colTest,outerBound,lowerBound;
+        var rowTest,colTest,rightBound,lowerBound;
         let values = [];
         let count =0;
         if(boxNum==0){//top left box
@@ -86,16 +86,17 @@
           rowTest=6;
           colTest=6;
           }
-        outerBound=rowTest+3;
+        rightBound=rowTest+3;//
         lowerBound=colTest+3;
         let valueHolder = colTest;//This vlaue is used to reset the inner for loop
         //looping though each "box" putting them into an array then checking for duplicates
-        for(;rowTest<outerBound;rowTest++){
+        for(;rowTest<rightBound;rowTest++){
             for(colTest=valueHolder;colTest<lowerBound;colTest++){
                 values[count]=board[rowTest][colTest].value;
                 if(values[count]==''){//cell is empty
                   return false;
                 }
+                //TODO add check for letters here check for not 1-9
             count++;
             }
         }

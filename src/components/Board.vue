@@ -7,21 +7,21 @@
                     <div class="row" :class="{'bottomBorder':rowIndex===2 || rowIndex===5}" 
                     v-for="(row, rowIndex) in puzzle" :key="rowIndex">
                         <v-text-field v-model.number="cell.value" class="cell ma-0 pa-0 " hide-details :class="{'rightBorder':colIndex===2 || colIndex===5, 'orginal': cell.orginal===true}" 
-                        v-for="(cell, colIndex) in row" :key="colIndex" maxlength="1"  @click="test(rowIndex,colIndex,puzzle)"> 
+                        v-for="(cell, colIndex) in row" :key="colIndex" maxlength="1"  browser-autocomplete="new-password"   @click="test(rowIndex,colIndex,puzzle)"> 
                         </v-text-field>
                     </div>
                 </v-flex>
-                <v-flex md3>
+                <v-flex md3> 
                     <v-container fill-height fluid >
-                        <v-row justify="end">
-                            <v-btn large color="primary" @click="newboard('easy')">easy </v-btn>
-                            <v-btn large color="primary" @click="newboard('medium')">medium </v-btn>
-                            <v-btn large color="primary" @click="newboard('hard')">hard</v-btn>
-                            <v-btn large color="primary" @click="newboard('insane')">insane</v-btn>
-                            <v-btn large color="error" @click="ResetPuzzle()">reset</v-btn>
+                        <v-row justify="end"> 
+                            <v-btn class="mb-1" color="primary" @click="newboard('easy')">easy</v-btn>
+                            <v-btn class="mb-1" color="primary" @click="newboard('medium')">medium </v-btn>
+                            <v-btn class="mb-1" color="primary" @click="newboard('hard')">hard</v-btn>
+                            <v-btn class="mb-1" color="primary" @click="newboard('insane')">insane</v-btn>
+                            <v-btn color="error" @click="ResetPuzzle()">reset</v-btn>
                         </v-row>
-                    </v-container>
-                </v-flex>
+                    </v-container>   
+                </v-flex> 
             </v-layout>
         </div>
         </v-row>
@@ -166,8 +166,10 @@ export default {
     padding-bottom: 50px;
     padding-left: 80px;
 }
-.bric{
-    width: 20px;
+.v-btn:not(.v-btn--round).v-size--default {
+    height: 36px;
+    min-width: 100px;
+    padding: 0 16px;
 }
 
 
