@@ -1,12 +1,9 @@
 <template>
   <v-row justify="center">
-
-    <!-- <v-btn color="primary" dark @click="doSomething">Open Dialog</v-btn> -->
     <v-btn primary color="success" @click="validateSudoku(vaildBoard)">Validate</v-btn>
     <v-dialog v-model="dialog" persistent max-width="400">
       <v-card>
         <v-card-title class="headline">{{ isValid }}</v-card-title>
-        <!--<v-card-text>{{ isValid }}</v-card-text> -->
         <v-card-actions>
           <v-spacer></v-spacer>
           <v-btn color="green darken-1" text @click="dialog = false">close</v-btn>
@@ -96,14 +93,14 @@
                 if(values[count]==''){//cell is empty
                   return false;
                 }
-                //TODO add check for letters here check for not 1-9
             count++;
             }
         }
         count=0;
         values.sort();
         var test;
-        for(test=0;test<8;test++){// checking array for doplicuts
+        // checking array for duplicates
+        for(test=0;test<8;test++){
           if(values[test]==values[test+1]){
              return false;
           }
@@ -121,7 +118,8 @@
                     rowValues[currentCell]=board[rows][currentCell].value;
                 }
                 rowValues.sort();
-                for(counter=0;counter<8;counter++){// array stops at 8 because it will array index out of bounce with the +1 in the logic
+                // array stops at 8 because it will array index out of bounce with the +1 in the logic
+                for(counter=0;counter<8;counter++){
                     if(rowValues[counter]==rowValues[counter+1]){
                         return false;
                     }
