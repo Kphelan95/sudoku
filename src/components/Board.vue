@@ -7,7 +7,7 @@
                     <div class="row" :class="{'bottomBorder':rowIndex===2 || rowIndex===5}" 
                     v-for="(row, rowIndex) in puzzle" :key="rowIndex">
                         <v-text-field v-model.number="cell.value" class="cell ma-0 pa-0 " hide-details :class="{'rightBorder':colIndex===2 || colIndex===5, 'orginal': cell.orginal===true}" 
-                        v-for="(cell, colIndex) in row" :key="colIndex" maxlength="1"  browser-autocomplete="new-password"   @click="test(rowIndex,colIndex,puzzle)"> 
+                        v-for="(cell, colIndex) in row" :key="colIndex" maxlength="1" :disabled="cell.orginal === true"  autocomplete="new-password" @keypress="formatInput($event)" @click="test(rowIndex,colIndex,puzzle)"> 
                         </v-text-field>
                     </div>
                 </v-flex>
@@ -45,7 +45,8 @@ export default {
             emptytBoard: ".................................................................................",
             isVaild: "",
             resetPoint: "",
-            boardString: ""
+            boardString: "",
+            disabled: false
         }
         /* notes
             next, change vaildate logic to use sets,( with this check to make sure the length is 9 so no dops)
@@ -69,6 +70,7 @@ export default {
     },
     methods: { 
         generatePuzzle (){
+            //takeing difficulty from the URL on first load
             let userInput= this.$route.params.difficulty;
             if(userInput!="easy" && userInput!="medium" && userInput!="hard" && userInput!="insane"){
                 userInput= "";
@@ -121,6 +123,15 @@ export default {
                     this.puzzle[row][col].value='';
                 }
             }
+        },
+        formatInput(evt){
+            evt = (evt) ? evt : window.event;
+            var charCode = (evt.which) ? evt.which : evt.keyCode;
+                if (charCode < 48 || charCode > 57) {
+                    evt.preventDefault();
+                } else {
+                    return true;
+                }
         }
     }
 }
@@ -143,7 +154,8 @@ export default {
     border: 2px solid #000;
     font-size: 20px;
     cursor: default;
-    text-align: center
+    text-align: center;
+    font-weight: bold;
 }
 
 .rightBorder{
@@ -152,9 +164,11 @@ export default {
 .bottomBorder{
     border-bottom: 4px solid #000 ;
 }
+
 .orginal{
     font-weight: bold;
     background:#d3d3d3;
+    
 }
 
 .v-input__control, .v-input__slot, .v-select__slot {
