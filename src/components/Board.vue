@@ -6,8 +6,8 @@
                 <v-flex md6>
                     <div class="row" :class="{'bottomBorder':rowIndex===2 || rowIndex===5}" 
                     v-for="(row, rowIndex) in puzzle" :key="rowIndex">
-                        <v-text-field v-model.number="cell.value" class="cell ma-0 pa-0 " hide-details :class="{'rightBorder':colIndex===2 || colIndex===5, 'orginal': cell.orginal===true}" 
-                        v-for="(cell, colIndex) in row" :key="colIndex" maxlength="1" :disabled="cell.orginal === true"  autocomplete="new-password" @keypress="formatInput($event)"> 
+                        <v-text-field v-model.number="cell.value" class="cell ma-0 pa-0 " hide-details :class="{'rightBorder':colIndex===2 || colIndex===5, 'orginal': cell.orginal===true,'wrongVAL': cell.wrongValue===true}" 
+                        v-for="(cell, colIndex) in row" :key="colIndex" maxlength="1" :disabled="cell.orginal"  autocomplete="new-password" @keypress="formatInput($event)"> 
                         </v-text-field>
                     </div>
                 </v-flex>
@@ -20,18 +20,18 @@
                             <v-btn class="mb-1" color="primary" @click="newboard('insane')">insane</v-btn>
                             <v-btn color="error" @click="ResetPuzzle()">reset</v-btn>
                         </v-row>
-                    </v-container>   
+                    </v-container>
                 </v-flex> 
             </v-layout>
         </div>
         </v-row>
-    <vaildate class="mt-4" :vaildBoard="puzzle"/>
+        <vaildate class="mt-4" :vaildBoard="puzzle" @click.native="test"/> 
     </div>
 </template>
 
 <script>
-import vaildate from './ValidateBtn';
-import { sudoku } from 'sudoku.js/sudoku.js'
+import vaildate from './ValidateBtn';//v-on:click=                @click="test()"
+import { sudoku } from 'sudoku.js/sudoku.js' 
 export default {
     name:'Sudoku',
     data (){
@@ -72,7 +72,8 @@ export default {
                     return row.map(cell =>{
                         return{
                             value: cell,
-                            orginal: cell !='.'
+                            orginal: cell !='.',
+                            wrongValue: false
                         }
                     })
                 })
@@ -91,14 +92,17 @@ export default {
                     return row.map(cell =>{
                         return{
                             value: cell,
-                            orginal: cell !='.'
+                            orginal: cell !='.',
+                            wrongValue: false
                         }
                     })
                 })
             for(let row=0;row<9;row++){
                 for(let col=0;col<9;col++){
-                    if(this.puzzle[row][col].value==='.')
-                    this.puzzle[row][col].value='';
+                    if(this.puzzle[row][col].value==='.'){
+                        this.puzzle[row][col].value='';
+                    }
+                    this.puzzle[row][col].wrongValue=false;
                 }
             }
         },
@@ -111,6 +115,18 @@ export default {
                 } else {
                     return true;
                 }
+        },
+        swap(){
+            if(this.puzzle[0][0].wrongValue){
+                this.puzzle[0][0].wrongValue=false;
+            }
+            else{
+                this.puzzle[0][0].wrongValue=true;
+            }
+        },
+        test(){
+            this.$forceUpdate();
+            console.log("updateing")
         }
     }
 }
@@ -139,8 +155,7 @@ export default {
 }
 .orginal{
     font-weight: bold;
-    background:#d3d3d3;
-    
+    background:#d3d3d3 !important;
 }
 .v-input__control, .v-input__slot, .v-select__slot {
 	border: 0;
@@ -149,5 +164,8 @@ export default {
     height: 36px;
     min-width: 100px;
     padding: 0 16px;
+}
+.wrongVAL{
+    background: red;
 }
 </style>
