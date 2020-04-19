@@ -15,8 +15,6 @@
 
 
 <script>
-//import cake from 'vue';
-//cake.forceUpdate();
   export default {
     props:{
       vaildBoard:{
@@ -32,24 +30,18 @@
     },
     methods: {
       validateSudoku(board){
-        //This method calls helper fuctions inorder to vaildate the board board    
-        //for(let box=0;box<9;box++){
-                  /*
-          if(!this.validateSudokuBox(board,0)){//0 should be box
+        //vaildates and marks each of the inner boxes  
+          for(let i=0;i<=6;i+=3){
+            for(let k=0;k<=6;k+=3){
+              this.ValidateBox(i,k);
+            }
+          }
+          //vaildates each row, then displays a message to the user that the board is incorrect
+          if(this.validateSudokuRows(board)===false){
             this.isValid="The sudoku board is not correct. Please try again!";
             this.dialog = true;
             return false;
-          }
-                */
-        //} 
-        let c = board;
-        console.log(c);
-          this.testValidate();
-    //      if(this.validateSudokuRows(board)===false){
-    //        this.isValid="The sudoku board is not correct. Please try again!";
-    //        this.dialog = true;
-    //        return false;
-    //      }
+          } 
         this.isValid="The sudoku board is correct!";
         this.dialog = true;
         return true;
@@ -77,7 +69,7 @@
             }
           return flag;
         },
-      testValidate(){
+      ValidateBox(rowNumber,colNumber){
 /*
   brians idea,
         -use of a map,
@@ -85,19 +77,13 @@
             -then iderate over the list and check for number of value pairs
                 -if there is more than 1 there are dops
 */
-        let cell1= {'x':-1,'y':-1,'value':-1};
-        let cell2= {'x':-1,'y':-1,'value':-1};
-        let cell3= {'x':-1,'y':-1,'value':-1};
-        let cell4= {'x':-1,'y':-1,'value':-1};
-        let cell5= {'x':-1,'y':-1,'value':-1};
-        let cell6= {'x':-1,'y':-1,'value':-1};
-        let cell7= {'x':-1,'y':-1,'value':-1};
-        let cell8= {'x':-1,'y':-1,'value':-1};
-        let cell9= {'x':-1,'y':-1,'value':-1};
-        let testOBJ=[cell1,cell2,cell3,cell4,cell5,cell6,cell7,cell8,cell9];
+        let flag= true;
+        let testOBJ=[];
+        for (let i = 0; i < 9; i++) testOBJ.push({'x':-1,'y':-1,'value':-1});
+
         let counter=0;
-        for(let r =0; r<3; r++){
-          for(let c=0; c<3; c++){
+        for(let r =rowNumber; r<rowNumber+3; r++){
+          for(let c=colNumber; c<colNumber+3; c++){
             testOBJ[counter].value=this.vaildBoard[r][c].value;
             testOBJ[counter].x=c;
             testOBJ[counter].y=r;
@@ -110,11 +96,18 @@
               if(testOBJ[outer].value==testOBJ[inner].value){
                 this.vaildBoard[testOBJ[outer].y][testOBJ[outer].x].wrongValue=true;
                 this.vaildBoard[testOBJ[inner].y][testOBJ[inner].x].wrongValue=true;
+                flag= false;
               }
             }
           }
           if(testOBJ[outer].value==""){
             this.vaildBoard[testOBJ[outer].y][testOBJ[outer].x].wrongValue=true;
+            flag= false;
+          }
+        }
+        if(flag===true){
+          for(let i=0;i<9;i++){
+            this.vaildBoard[testOBJ[i].y][testOBJ[i].x].wrongValue=false;
           }
         }
       }
